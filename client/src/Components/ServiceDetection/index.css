@@ -1,0 +1,38 @@
+.form-container{
+    border-style:groove;
+    width: 600px;
+    background-color: rgb(164, 176, 236);
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+button{
+    
+    border-radius: 17px;
+    background-color: rgb(233, 233, 235);
+    color: black;
+    font-weight: 600;
+}
+.row{
+    justify-content: space-around;
+}
+input{
+    margin-top: 20px;
+    margin-bottom: 30px;
+    
+}
+button{
+    cursor:pointer;
+    width: 100px;
+    height: 36px;
+}
+img{
+    width: 500px;
+    height: 400px;
+}
+.initmap{
+    margin-top: 40px;
+     text-align: center;
+}
