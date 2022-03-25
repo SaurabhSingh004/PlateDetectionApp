@@ -1,69 +1,60 @@
 
-import React from 'react';
-import mapboxgl from 'mapbox-gl';
+import React, { useEffect, useRef, useCallback } from 'react';
+import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
+import { locations } from './geolocations';
+import './InitMap.css';
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoic2F1cmFiaHNpbmdoMDA0IiwiYSI6ImNsMGdjZWQxcjExY2szams2ZG9ieDloYXEifQ.q965bYVjp2My5eXVtrr1mQ';
+const InitMap = () => {
+  const map = useRef(null);
+  const mapContainerRef = useRef(null);
+  mapboxgl.accessToken = 'pk.eyJ1Ijoic2F1cmFiaHNpbmdoMDA0IiwiYSI6ImNsMGdjZWQxcjExY2szams2ZG9ieDloYXEifQ.q965bYVjp2My5eXVtrr1mQ';
 
-// const data = [
-// 	{
-// 		"location": "Manhattan Ave & Norman Ave at NE corner",
-// 		"city": "Brooklyn",
-// 		"state": "New York",
-// 		"coordinates": [-73.9516030004786,40.71557300071668],
-// 	},
-// 	{
-// 		"location": "6th Ave & 42nd St at NW corner",
-// 		"city": "Manhattan",
-// 		"state": "New York",
-// 		"coordinates": [-73.98393399979334,40.72533300052329],
-// 	},
-// 	{
-// 		"location": "Essex St & Delancey St at SE corner",
-// 		"city": "Manhattan",
-// 		"state": "New York",
-// 		"coordinates": [-73.9882730001973,40.718207001246554],
-// 	}
-// ]
+  useEffect(() => {
+    if (map.current) return; 
 
-class InitMap extends React.Component{
+    map.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      zoom: 10,
+      center: [3.361881, 6.672557],
+    });
 
-	// Set up states for updating map 
-	constructor(props){
-		super(props);
-		this.state = {
-			lng: -74,
-			lat: 40.7128,
-			zoom: 12
-		}
-	}
+    // clean up on unmount
+    return () => map.current.remove();
+  }, []);
 
-	// Create map and lay over markers
-	componentDidMount(){
-		const map = new mapboxgl.Map({
-			container: this.mapContainer,
-			style: 'mapbox://styles/mapbox/streets-v11', 
-			center: [this.state.lng, this.state.lat],
-			zoom: this.state.zoom
-		})
+  useEffect(() => {
+    if (!map.current) return; 
 
-		// data.forEach((location) => {
-		// 	console.log(location)
-		// 	 new mapboxgl.Marker({
-    //    draggable: true})
-		// 					.setLngLat(location.coordinates)
-		// 					.setPopup(new mapboxgl.Popup({ offset: 30 })
-		// 					.setHTML('<h4>' + location.city + '</h4>' + location.location))
-		// 					.addTo(map);
-		// })
-	}
 
-	render(){
-		return(
-			<div>
-				<div ref={el => this.mapContainer = el} style={{width:'80%', height:'80vh'}}/>
-			</div>
-		)
-	}
-}
+    locations.map((marker) => {
+      // create a HTML element for each feature
+      var el = document.createElement('div');
+      el.className = 'circle';
+
+      // make a marker for each feature and add it to the map
+      new mapboxgl.Marker(el)
+        .setLngLat(marker.geometry.coordinates)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML('<p>' + marker.properties.description + '</p>')
+        )
+        .addTo(map.current);
+
+      map.current.on('load', async () => {
+        map.current.flyTo({
+          center: marker.center,
+        });
+      });
+    });
+  });
+
+  return (
+    <div>
+      <div ref={mapContainerRef} className='map-container' />
+    </div>
+  );
+};
 
 export default InitMap;

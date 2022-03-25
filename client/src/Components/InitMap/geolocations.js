@@ -6,7 +6,7 @@ export const locations=[
               "description": "A northside park that is home to the Lincoln Park Zoo"
             },
             "geometry": {
-              "coordinates": [-87.637596, 41.940403],
+              "coordinates": [3.36, 6.67],
               "type": "Point"
             }
           },
@@ -17,7 +17,7 @@ export const locations=[
               "description": "A lakefront park on Chicago's south side"
             },
             "geometry": {
-              "coordinates": [-87.603735, 41.829985],
+              "coordinates": [3.36, 6.678],
               "type": "Point"
             }
           },
